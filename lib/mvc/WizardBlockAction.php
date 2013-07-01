@@ -85,7 +85,8 @@ abstract class website_WizardBlockAction extends website_BlockAction
 		$data = $this->getWizardData($request);
 		$nextStep = $this->getNextStep($request);
 		$bean = $this->getNewWizardInstance($request);
-		$invalidProperties = BeanUtils::populate($bean, array_merge($data["data"], $request->getParameters()));
+		$beanData = isset($data["data"]) ? array_merge($data["data"], $request->getParameters()) : $request->getParameters();
+		$invalidProperties = BeanUtils::populate($bean, $beanData);
 		$allPropertiesValid = f_util_ArrayUtils::isEmpty($invalidProperties);
 		if (!$allPropertiesValid)
 		{
