@@ -88,6 +88,18 @@ class website_BlockController implements f_mvc_Controller
 		return self::$instance;
 	}
 
+	public static function resetInstance()
+	{
+		$instance = self::$instance;
+		self::$instance = null;
+		return $instance;
+	}
+
+	public static function setInstance($instance)
+	{
+		self::$instance = $instance;
+	}
+
 	/**
 	 * @see f_mvc_Controller::forward()
 	 *
@@ -420,7 +432,7 @@ class website_BlockController implements f_mvc_Controller
 						Framework::info(__METHOD__ . ' FROM CACHE: ' . get_class($this->action));
 					}
 					$this->processActionFromCache($cacheItem);
-					$this->endProcessing($cacheItem);
+					$this->endProcessing($cacheItem, null, false);
 					return;
 				}
 				$this->startCacheRecorders();
@@ -497,9 +509,9 @@ class website_BlockController implements f_mvc_Controller
 	/**
 	 * @param Exception $e
 	 */
-	private function endProcessing($cacheItem = null, $e = null)
+	private function endProcessing($cacheItem = null, $e = null, $recording = true)
 	{
-		if ($cacheItem !== null && $this->isRecording())
+		if ($cacheItem !== null && $this->isRecording() && $recording)
 		{
 			if ($e == null)
 			{
