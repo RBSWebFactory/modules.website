@@ -240,7 +240,7 @@ class website_Page implements f_mvc_Context
 	 */
 	public function addMeta($name, $content, $scheme = null, $isHttpEquiv = false)
 	{
-		$this->metas[] = array($name, $content, $scheme, $isHttpEquiv);
+		$this->metas[$name] = array($name, $content, $scheme, $isHttpEquiv);
 	}
 
 	/**
