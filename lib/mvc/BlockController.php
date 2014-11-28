@@ -24,15 +24,15 @@ class website_BlockController implements f_mvc_Controller
 	/**
 	 * @var website_BlockActionRequest
 	 */
-	private $actionRequest;
+	protected $actionRequest;
 	private $originalPageContext;
 
 	/**
 	 * @var website_BlockAction
 	 */
-	private $action;
+	protected $action;
 
-	private $shouldRedirect = false;
+	protected $shouldRedirect = false;
 
 	/**
 	 * @var website_BlockAction[]
@@ -361,7 +361,7 @@ class website_BlockController implements f_mvc_Controller
 
 	/**
 	 */
-	private function processInternal()
+	protected function processInternal()
 	{
 		//echo "Begin processing ".$this->action->getName()."<br/>\n";
 		$requestContext = RequestContext::getInstance();
