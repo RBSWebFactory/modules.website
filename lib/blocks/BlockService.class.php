@@ -628,7 +628,7 @@ class block_BlockService extends BaseService
 			$generator->assign('blockInfo', $blocWrapper->setBlocInfoArray($blockInfos));
 			
 			// Cache keys
-			$configuredCacheKeys = isset($blockInfos['cache-key']) ? explode(",", $blockInfos['cache-key']) : array();
+			$configuredCacheKeys = isset($blockInfos['cache-key']) && trim($blockInfos['cache-key']) != "" ? explode(",", $blockInfos['cache-key']) : array();
 			$allowedKeyCacheName = array("cmpref", "page", "nav");
 			foreach ($configuredCacheKeys as &$value)
 			{
