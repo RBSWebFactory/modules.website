@@ -51,8 +51,15 @@ class website_WebsiteService extends f_persistentdocument_DocumentService
 	 * @return void
 	 */
     protected function preSave($document, $parentNodeId)
-    {     
-        $document->setProtocol('http');
+    {    
+	
+	// If deprecated proderty {protocol} == 'https' keep it that way
+	// otherwise force its value to 'http'
+	if ("https" != $document->getProtocol())
+	{ 
+	        $document->setProtocol('http');
+	}
+
         $protocol = $document->getProtocol() . '://';
         $masterdomain = $document->getVoDomain();
         $localizebypath = $document->getLocalizebypath();
