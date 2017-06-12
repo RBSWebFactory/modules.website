@@ -1773,6 +1773,13 @@ class website_PageService extends f_persistentdocument_DocumentService
 		
 		$this->addBenchTime('htmlGenerating');
 		$pageContext->benchTimes = $this->benchTimes;
+		
+		// START SPE
+		if(isset($_GET["hybris"]) && $_GET["hybris"] == 1) {
+			website_PageRessourceService::getInstance()->setGlobalTemplateName('PageDynamic-Hybris');
+		}
+		// END SPE
+		
 		$pageContext->renderHTMLBody($htmlBody, website_PageRessourceService::getInstance()->getGlobalTemplate());
 	}
 	
