@@ -1775,12 +1775,103 @@ class website_PageService extends f_persistentdocument_DocumentService
 		$pageContext->benchTimes = $this->benchTimes;
 		
 		// START SPE
-		if(isset($_GET["hybris"]) && $_GET["hybris"] == 1) {
-			website_PageRessourceService::getInstance()->setGlobalTemplateName('PageDynamic-Hybris');
+		if ($this->canUsePageDynamicAlternative()) {
+			$templateName = $this->getPageDynamicAlternativeGlobalTemplateName();
+			website_PageRessourceService::getInstance()->setGlobalTemplateName($templateName);
+			$this->persistPageDynamicAlternativeActivationValue();
 		}
 		// END SPE
 		
 		$pageContext->renderHTMLBody($htmlBody, website_PageRessourceService::getInstance()->getGlobalTemplate());
+	}
+	
+	/**
+	 * Store the PageDynamicAlternative activation info in session so that
+	 * its activation can persist across subsequent requests while the user
+	 * is authenticated/connected.
+	 * 
+	 * @return void
+	 */
+	protected function persistPageDynamicAlternativeActivationValue()
+	{
+		$activationParam = $this->getPageDynamicAlternativeActivationParam();
+		$activationValue = $this->getPageDynamicAlternativeActivationValue();
+		$_SESSION[$activationParam] = $activationValue;
+	}
+	
+	/**
+	 * Returns true if the PageDynamic Hybris mode is allowed at all.
+	 * If allowed, it must also be activated (Requqest or Session) to be used.
+	 * 
+	 * @return boolean
+	 */
+	protected function isPageDynamicAlternativeAllowed()
+	{
+		return Framework::getConfigurationValue("modules/website/pagedynamic/alternative/allowed", false);
+	}
+	
+	/**
+	 * Returns the name of the param/key to look for in request or session.
+	 * 
+	 * @return string
+	 */
+	protected function getPageDynamicAlternativeActivationParam()
+	{
+		return Framework::getConfigurationValue("modules/website/pagedynamic/alternative/activation-param", "cpda");
+	}
+	
+	/**
+	 * Returns the value that activates the PageDynamic Hybris mode 
+	 * when it is found in either request or session.
+	 * 
+	 * @return mixed|NULL
+	 */
+	protected function getPageDynamicAlternativeActivationValue()
+	{
+		return Framework::getConfigurationValue("modules/website/pagedynamic/alternative/activation-value", 1);
+	}
+	
+	/**
+	 * Returns true if the following are true :
+	 * - PageDynamic Hybris mode is allowed 
+	 * - PageDynamic Hybris mode is activated in request OR session
+	 * 
+	 * @return boolean
+	 */
+	protected function canUsePageDynamicAlternative()
+	{
+		if (!$this->isPageDynamicAlternativeAllowed()) {
+			return false;
+		}
+		
+		$activationParam = $this->getPageDynamicAlternativeActivationParam();
+		$activationValue = $this->getPageDynamicAlternativeActivationValue();
+		
+		// Enabled from Session
+		$valueFromSession = isset($_SESSION[$activationParam]) ?  $_SESSION[$activationParam] : null;
+		if ($valueFromSession == $activationValue) {
+			return true;
+		}
+		
+		// Enabled from Request
+		$valueFromRequest = isset($_GET[$activationParam]) ? $_GET[$activationParam] : null;
+		if ($valueFromRequest == $activationValue) {
+			return true;
+		}
+
+		return false;;
+	}
+	
+	/**
+	 * Returns the {globalTemplateName} to use. 
+	 * The related file is expected to be found at the following path :
+	 * (override/)modules/website/templates/{globalTemplateName}.all.all.php
+	 * 
+	 * @return mixed|NULL
+	 */
+	protected function getPageDynamicAlternativeGlobalTemplateName()
+	{
+		return Framework::getConfigurationValue("modules/website/pagedynamic/alternative/template-name", "PageDynamic-Alternative");;
 	}
 	
 	/**
