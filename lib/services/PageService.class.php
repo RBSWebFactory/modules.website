@@ -1775,7 +1775,7 @@ class website_PageService extends f_persistentdocument_DocumentService
 		$pageContext->benchTimes = $this->benchTimes;
 		
 		// START SPE
-		if ($this->canUsePageDynamicAlternative()) {
+		if ($this->isPageDynamicAlternativeEnabled()) {
 			$templateName = $this->getPageDynamicAlternativeGlobalTemplateName();
 			website_PageRessourceService::getInstance()->setGlobalTemplateName($templateName);
 			$this->persistPageDynamicAlternativeActivationValue();
@@ -1838,7 +1838,7 @@ class website_PageService extends f_persistentdocument_DocumentService
 	 * 
 	 * @return boolean
 	 */
-	protected function canUsePageDynamicAlternative()
+	public function isPageDynamicAlternativeEnabled()
 	{
 		if (!$this->isPageDynamicAlternativeAllowed()) {
 			return false;
@@ -1859,7 +1859,7 @@ class website_PageService extends f_persistentdocument_DocumentService
 			return true;
 		}
 
-		return false;;
+		return false;
 	}
 	
 	/**
